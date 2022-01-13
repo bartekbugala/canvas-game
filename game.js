@@ -4,7 +4,6 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const projectiles = [];
-const fps = 25;
 
 class Player {
   constructor(x, y, radius, color) {
@@ -35,11 +34,12 @@ class Projectile extends Player {
 const player = new Player(center.x, center.y, 30, 'blue');
 player.draw();
 
-function animate() {
-  setTimeout(() => {
-    requestAnimationFrame(animate);
-  }, 1000 / fps);
+function GameLoop() {
+    animate()
+    requestAnimationFrame(GameLoop);
+}
 
+function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   projectiles.forEach((proj) => {
     proj.draw();
@@ -69,3 +69,5 @@ function calculateVelocity(angle) {
     y: Math.sin(angle),
   };
 }
+
+GameLoop()
