@@ -6,6 +6,10 @@ const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const projectiles = [];
 const enemies = [];
 
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
 class Player {
   constructor(x, y, radius, color) {
     this.x = x;
@@ -36,7 +40,8 @@ class Enemy extends Player {
   constructor(x, y, radius, color) {
     super(x, y, radius, color);
     const genX = getRandom(canvas.width);
-    const genY = getRandom(canvas.height);
+    const genY = [0, canvas.height].random();
+
     const angle = calculateAngle({ x: genX, y: genY }, canvas);
     const velocity = calculateVelocity(angle);
     this.velocity = velocity;
@@ -57,27 +62,34 @@ spawnEnemies();
 
 function GameLoop() {
   requestAnimationFrame(GameLoop);
-
   animate();
   player.draw();
 }
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  projectiles.forEach((proj) => {
-    proj.draw();
-    proj.update();
+  projectiles.forEach((projectile) => {
+    projectile.draw();
+    projectile.update();
   });
-  enemies.forEach((enem) => {
-    enem.draw();
-    enem.update();
+  enemies.forEach((enemy, enemyIndex) => {
+    enemy.draw();
+    enemy.update();
+
+    projectiles.forEach((projectile, projectileIndex) => {
+      const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
+      if (dist - enemy.radius - projectile.radius < 1) {
+        enemies.splice(enemyIndex, 1);
+        projectiles.splice(projectileIndex, 1);
+      }
+    });
   });
 }
 
 function spawnEnemies() {
   setInterval(() => {
     enemies.push(new Enemy(500, 200, 25, 'green' /* , { x: 2, y: 3 } */));
-  }, 2000);
+  }, 1000);
 }
 
 window.addEventListener('click', (e) => {
@@ -85,7 +97,9 @@ window.addEventListener('click', (e) => {
   const velocity = calculateVelocity(angle);
   projectiles.push(new Projectile(center.x, center.y, 5, 'red', velocity));
 });
+
 GameLoop();
+
 // HELPER FUNCTIONS
 function calculateAngleFromEvent(event, canvas) {
   return Math.atan2(
