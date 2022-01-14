@@ -31,8 +31,8 @@ class Projectile extends Player {
     this.velocity = velocity;
   }
   update() {
-    this.x = this.x + this.velocity.x;
-    this.y = this.y + this.velocity.y;
+    this.x = this.x + this.velocity.x * 4;
+    this.y = this.y + this.velocity.y * 4;
   }
 }
 
@@ -68,9 +68,17 @@ function GameLoop() {
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  projectiles.forEach((projectile) => {
+  projectiles.forEach((projectile, index) => {
     projectile.draw();
     projectile.update();
+    if (
+      projectile.x + projectile.radius < 0 ||
+      projectile.y + projectile.radius < 0 ||
+      projectile.x - projectile.radius > canvas.width ||
+      projectile.y - projectile.radius > canvas.width
+    ) {
+      projectiles.splice(index, 1);
+    }
   });
   enemies.forEach((enemy, enemyIndex) => {
     enemy.draw();
@@ -92,7 +100,8 @@ function spawnEnemies() {
   }, 1000);
 }
 
-window.addEventListener('click', (e) => {
+window.addEventListener('mousedown', (e) => {
+  console.log(projectiles);
   const angle = calculateAngleFromEvent(e, canvas);
   const velocity = calculateVelocity(angle);
   projectiles.push(new Projectile(center.x, center.y, 5, 'red', velocity));
