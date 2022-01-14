@@ -4,6 +4,7 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const projectiles = [];
+const enemies = [];
 
 class Player {
   constructor(x, y, radius, color) {
@@ -31,12 +32,34 @@ class Projectile extends Player {
   }
 }
 
-const player = new Player(center.x, center.y, 30, 'blue');
+class Enemy extends Player {
+  constructor(x, y, radius, color) {
+    super(x, y, radius, color);
+    const genX = getRandom(canvas.width);
+    const genY = getRandom(canvas.height);
+    const angle = calculateAngle({ x: genX, y: genY }, canvas);
+    const velocity = calculateVelocity(angle);
+    this.velocity = velocity;
+    this.x = genX;
+    this.y = genY;
+    this.radius = getRandom(50);
+    this.color = color;
+  }
+  update() {
+    this.x = this.x - this.velocity.x;
+    this.y = this.y - this.velocity.y;
+  }
+}
+
+const player = new Player(center.x, center.y, 30, 'rgba(0,0,100,.5)');
 player.draw();
+spawnEnemies();
 
 function GameLoop() {
-    animate()
-    requestAnimationFrame(GameLoop);
+  requestAnimationFrame(GameLoop);
+
+  animate();
+  player.draw();
 }
 
 function animate() {
@@ -45,29 +68,51 @@ function animate() {
     proj.draw();
     proj.update();
   });
+  enemies.forEach((enem) => {
+    enem.draw();
+    enem.update();
+  });
+}
+
+function spawnEnemies() {
+  setInterval(() => {
+    enemies.push(new Enemy(500, 200, 25, 'green' /* , { x: 2, y: 3 } */));
+  }, 2000);
 }
 
 window.addEventListener('click', (e) => {
-  const angle = calculateAngle(e, canvas);
+  const angle = calculateAngleFromEvent(e, canvas);
   const velocity = calculateVelocity(angle);
-  console.log(velocity);
-  projectiles.push(new Projectile(center.x, center.y, 5, 'orange', velocity));
-  animate();
+  projectiles.push(new Projectile(center.x, center.y, 5, 'red', velocity));
 });
-
+GameLoop();
 // HELPER FUNCTIONS
-function calculateAngle(event, canvas) {
+function calculateAngleFromEvent(event, canvas) {
   return Math.atan2(
     event.clientY - canvas.height / 2,
     event.clientX - canvas.width / 2
   );
 }
+function calculateAngle(coordinates, canvas) {
+  return Math.atan2(
+    coordinates.y - canvas.height / 2,
+    coordinates.x - canvas.width / 2
+  );
+}
 
-function calculateVelocity(angle) {
+function calculateVelocity(angle, reverse) {
+  if (reverse) {
+    return {
+      x: Math.sin(angle),
+      y: Math.cos(angle),
+    };
+  }
   return {
     x: Math.cos(angle),
     y: Math.sin(angle),
   };
 }
 
-GameLoop()
+function getRandom(max) {
+  return Math.floor(Math.random() * max);
+}
