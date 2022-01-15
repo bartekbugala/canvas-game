@@ -5,6 +5,8 @@ canvas.height = innerHeight;
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const projectiles = [];
 const enemies = [];
+let score = 0;
+const scoreElement = document.getElementById('score');
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];

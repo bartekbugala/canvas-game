@@ -1,6 +1,7 @@
-const player = new Player(center.x, center.y, 30, 'rgba(0,0,100,.5)');
+const player = new Player(center.x, center.y, 50, 'rgba(255,255,255)');
 player.draw();
 spawnEnemies();
+scoreElement.innerText = `${player.radius}`;
 
 let lastUpdate = new Date();
 
@@ -19,7 +20,8 @@ function GameLoop() {
 }
 
 function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   projectiles.forEach((projectile, index) => {
     projectile.draw();
     projectile.update();
@@ -41,20 +43,24 @@ function animate() {
       console.log(
         'collision',
         player.radius,
-        radiusDifference(player.radius, enemy.radius)
+        radiusDifference(player.radius, enemy.radius) || 1
       );
       player.radius -=
         player.radius - radiusDifference(player.radius, enemy.radius) >= 1
           ? radiusDifference(player.radius, enemy.radius) || 1
           : player.radius;
       enemies.splice(enemyIndex, 1);
+      scoreElement.innerText = `${player.radius}`;
     }
     projectiles.forEach((projectile, projectileIndex) => {
       if (isCollision(projectile, enemy)) {
-        player.radius +=
+        const radiusDiff =
           radiusDifference(player.radius, enemy.radius, 'add') || 1;
+        player.radius += radiusDiff;
         enemies.splice(enemyIndex, 1);
         projectiles.splice(projectileIndex, 1);
+        score += radiusDiff;
+        scoreElement.innerText = `${player.radius}`;
       }
     });
   });
@@ -62,7 +68,7 @@ function animate() {
 
 function spawnEnemies() {
   setInterval(() => {
-    enemies.push(new Enemy(500, 200, 25, 'green'));
+    enemies.push(new Enemy(500, 200, 25, 'white'));
   }, 800);
 }
 
@@ -76,7 +82,21 @@ window.addEventListener('mousedown', (e) => {
     alert('YOU HAVE BEEN DEFEATED!');
     return;
   }
-  projectiles.push(new Projectile(center.x, center.y, 5, 'red', velocity));
+  projectiles.push(new Projectile(center.x, center.y, 5, 'white', velocity));
+
+  /*
+  const angle = calculateAngleFromEvent(e, canvas);
+  const velocity = calculateVelocity(angle);
+  if (player.radius > 0) {
+    player.radius -= radiusDifference(player.radius, 5, 'subtract') || 1;
+  }
+  if (player.radius < 1) {
+    alert('YOU HAVE BEEN DEFEATED!');
+    return;
+  }
+  projectiles.push(new Projectile(center.x, center.y, 5, 'white', velocity));
+
+  */
 });
 
 GameLoop();

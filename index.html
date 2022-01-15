@@ -9,13 +9,27 @@
   <style>
     body {
       margin: 0;
+      padding: 0;
       cursor: crosshair;
+      position: relative;
+
+      width: 100vw;
+      height: 100vh;
     }
     canvas {
-      background-color: aliceblue;
+
+    }
+    #score {
+      user-select: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 50px;
+      color: white;
     }
   </style>
   <body>
+    <div id="score">0</div>
     <canvas id="game_canvas" width="640" height="150"></canvas>
     <script src="./classes.js"></script>
     <script src="./utils.js"></script>
