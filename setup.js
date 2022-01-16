@@ -16,12 +16,15 @@ let pause = false;
 let gameIsRunning = false;
 
 window.addEventListener('resize', () => {
-  canvas.width = gameContainer.clientWidth;
-  canvas.height = gameContainer.clientHeight;
+/*   canvas.width = gameContainer.clientWidth;
+  canvas.height = gameContainer.clientHeight; */
+  ctx.canvas.width = gameContainer.clientWidth;
+  ctx.canvas.height = gameContainer.clientHeight;
   center = { x: canvas.width / 2, y: canvas.height / 2 };
   player.center();
   enemies.splice(0);
   projectiles.splice(0);
+
 });
 
 Array.prototype.random = function () {

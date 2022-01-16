@@ -26,15 +26,19 @@ function calculateVelocity(angle, reverse) {
 }
 
 function getRandom(max) {
-  return Math.floor(Math.random() * max);
+  return randomNumber(max);
 }
+
+function randomNumber(max) {
+    return Math.floor(Math.random() * (max + 1));
+  }
 
 function isOutOfBounds(entity) {
   if (
     entity.x + entity.radius < 0 ||
     entity.y + entity.radius < 0 ||
     entity.x - entity.radius > canvas.width ||
-    entity.y - entity.radius > canvas.width
+    entity.y - entity.radius > canvas.height
   ) {
     return true;
   }
@@ -54,8 +58,6 @@ function radiusFromField(field) {
 }
 
 function radiusDifference(radius1, radius2, add) {
-  console.log('player.radius', radius1);
-  console.log('enemy.radius', radius2);
   const field1 = fieldFromRadius(radius1);
   const field2 = fieldFromRadius(radius2);
   if (add === 'add') {
