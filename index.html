@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -48,12 +49,13 @@
       font-family: 'Audiowide', cursive;
       font-size: 20px;
     }
-    #game-menu {
+    #game-menu,
+    #win-box {
       position: fixed;
       font-family: 'Audiowide', cursive;
       flex-direction: column;
       width: 300px;
-      min-height: 200px;
+      min-height: 100px;
       transform: translate(-50%, -50%);
       top: 50%;
       left: 50%;
@@ -66,7 +68,8 @@
       display: flex;
       align-items: center;
     }
-    #game-menu > button {
+    #game-menu > button,
+    #win-box > button {
       color: white;
       border: white 2px solid;
       border-radius: 20px;
@@ -76,7 +79,8 @@
       margin-top: 10px;
       cursor: pointer;
     }
-    #game-menu > button:hover {
+    #game-menu > button:hover,
+    #win-box > button:hover {
       background-color: gray;
     }
     .hidden {
@@ -85,10 +89,12 @@
       opacity: 0;
       transform: translate(-100%, -100%);
     }
-    #game-menu h1 {
+    #game-menu h1,
+    #win-box h1 {
       display: inline;
     }
-    #game-menu h2 {
+    #game-menu h2,
+    #win-box h2 {
       font-size: 20px;
     }
     #game-menu p {
@@ -118,7 +124,11 @@
           <p>Resizing resets, enemies and projectiles.</p>
           <p>Issue: If left in another tab many enemies might spawn at once.</p>
         </span>
-        <button id="start-button">Start</button>
+        <button id="start-button">Run</button>
+      </aside>
+      <aside id="win-box" class="hidden">
+        <h2>YOU WON!</h2>
+        <button id="win-button">restart</button>
       </aside>
       <span id="score">00</span>
       <canvas id="game-canvas"></canvas>

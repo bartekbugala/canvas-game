@@ -3,25 +3,36 @@ let spawnInterval;
 const player = new Player(center.x, center.y, 100, 'white');
 player.draw();
 /* let lastUpdate = new Date(); */
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible' && gameIsRunning) return;
+  if (document.visibilityState !== 'visible' && !gameIsRunning) return;
+  if (document.visibilityState !== 'visible') {
+    gameIsRunning = false;
+    console.log('gameRun stop');
+    return;
+  }
+  gameIsRunning = true;
+  console.log('gameRun');
+  // Modify behavior...
+});
 
 function GameLoop() {
   /*   //Determine the amount of time since last frame update
   let now = new Date();
   let elapsed = now - lastUpdate;
   lastUpdate = now; */
+
   if (player.radius < 1) {
     gameIsRunning = false;
     gameMenu.classList.remove('hidden');
     return;
   }
-  if (player.radius >= 150) {
+  if (player.radius >= winLimit) {
     gameIsRunning = false;
-    alert('You won')
-    gameMenu.classList.remove('hidden');
+    winBox.classList.remove('hidden');
     return;
   }
   if (!gameIsRunning) return;
-  if (document.visibilityState !== 'visible');
   if (player.radius < 1) return;
   if (pause) return;
   animate();
@@ -113,6 +124,21 @@ gameContainer.addEventListener('mousedown', (e) => {
 startButton.addEventListener('click', (e) => {
   e.preventDefault();
   gameMenu.classList.add('hidden');
+  gameIsRunning = true;
+  clearInterval(levelInterval);
+  clearInterval(spawnInterval);
+  levelIntervalSeconds = 1000;
+  enemies.splice(0);
+  projectiles.splice(0);
+  player.radius = 100;
+  spawnEnemies();
+  scoreElement.innerText = `${player.radius}`;
+  GameLoop();
+});
+
+winButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  winBox.classList.add('hidden');
   gameIsRunning = true;
   clearInterval(levelInterval);
   clearInterval(spawnInterval);

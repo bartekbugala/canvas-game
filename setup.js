@@ -1,9 +1,12 @@
 const gameContainer = document.getElementById('game-container');
 const startButton = document.getElementById('start-button');
+const winButton = document.getElementById('win-button');
 const gameMenu = document.getElementById('game-menu');
+const winBox = document.getElementById('win-box');
 const canvas = document.getElementById('game-canvas');
 const scoreElement = document.getElementById('score');
 const ctx = canvas.getContext('2d');
+const winLimit = 250;
 canvas.width = gameContainer.clientWidth;
 canvas.height = gameContainer.clientHeight;
 let center = { x: canvas.width / 2, y: canvas.height / 2 };
@@ -16,7 +19,7 @@ let pause = false;
 let gameIsRunning = false;
 
 window.addEventListener('resize', () => {
-/*   canvas.width = gameContainer.clientWidth;
+  /*   canvas.width = gameContainer.clientWidth;
   canvas.height = gameContainer.clientHeight; */
   ctx.canvas.width = gameContainer.clientWidth;
   ctx.canvas.height = gameContainer.clientHeight;
@@ -24,7 +27,6 @@ window.addEventListener('resize', () => {
   player.center();
   enemies.splice(0);
   projectiles.splice(0);
-
 });
 
 Array.prototype.random = function () {
@@ -66,7 +68,6 @@ class Enemy extends Player {
     super(x, y, radius, color);
     const genX = getRandom(canvas.width);
     const genY = [0, canvas.height].random();
-
     const angle = calculateAngle({ x: genX, y: genY }, canvas);
     const velocity = calculateVelocity(angle);
     this.velocity = velocity;
