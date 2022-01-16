@@ -1,8 +1,8 @@
 // HELPER FUNCTIONS
 function calculateAngleFromEvent(event, canvas) {
   return Math.atan2(
-    event.clientY - canvas.height / 2,
-    event.clientX - canvas.width / 2
+    event.clientY - gameContainer.offsetTop + canvas.offsetTop - canvas.height / 2,
+    event.clientX - gameContainer.offsetLeft + canvas.offsetLeft - canvas.width / 2
   );
 }
 function calculateAngle(coordinates, canvas) {
