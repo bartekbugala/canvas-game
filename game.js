@@ -14,6 +14,12 @@ function GameLoop() {
     gameMenu.classList.remove('hidden');
     return;
   }
+  if (player.radius >= 150) {
+    gameIsRunning = false;
+    alert('You won')
+    gameMenu.classList.remove('hidden');
+    return;
+  }
   if (!gameIsRunning) return;
   if (document.visibilityState !== 'visible');
   if (player.radius < 1) return;
