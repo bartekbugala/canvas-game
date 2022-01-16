@@ -1,15 +1,28 @@
 const gameContainer = document.getElementById('game-container');
-const canvas = document.getElementById('game_canvas');
+const startButton = document.getElementById('start-button');
+const gameMenu = document.getElementById('game-menu');
+const canvas = document.getElementById('game-canvas');
+const scoreElement = document.getElementById('score');
 const ctx = canvas.getContext('2d');
 canvas.width = gameContainer.clientWidth;
 canvas.height = gameContainer.clientHeight;
-const center = { x: canvas.width / 2, y: canvas.height / 2 };
+let center = { x: canvas.width / 2, y: canvas.height / 2 };
 const projectiles = [];
 const enemies = [];
 let score = 0;
-const scoreElement = document.getElementById('score');
+
 let levelIntervalSeconds = 1000;
-const pause = false;
+let pause = false;
+let gameIsRunning = false;
+
+window.addEventListener('resize', () => {
+  canvas.width = gameContainer.clientWidth;
+  canvas.height = gameContainer.clientHeight;
+  center = { x: canvas.width / 2, y: canvas.height / 2 };
+  player.center();
+  enemies.splice(0);
+  projectiles.splice(0);
+});
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -27,6 +40,10 @@ class Player {
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     ctx.fillStyle = this.color;
     ctx.fill();
+  }
+  center() {
+    this.x = center.x;
+    this.y = center.y;
   }
 }
 
