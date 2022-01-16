@@ -12,18 +12,11 @@ function GameLoop() {
   lastUpdate = now; */
   if (document.visibilityState !== 'visible');
   if (player.radius < 1) return;
-  if (pause) return; 
+  if (pause) return;
   animate();
   requestAnimationFrame(GameLoop);
   if (player.radius < 0) return;
   player.draw();
-}
-
-function LevelCounter() {
-  setTimeout(() => {
-   /*  LevelCounter(); */
-    levelIntervalSeconds -= 100;
-  }, 1000);
 }
 
 function animate() {
@@ -77,10 +70,14 @@ function spawnEnemies() {
   setInterval(() => {
     enemies.push(new Enemy(500, 200, 25, 'white'));
   }, levelIntervalSeconds);
+  setInterval(() => {
+    if (levelIntervalSeconds - 50 < 0) return;
+    levelIntervalSeconds -= 50;
+  }, 50);
 }
 
 gameContainer.addEventListener('mousedown', (e) => {
-/*   ctx.beginPath();
+  /*   ctx.beginPath();
   ctx.arc(event.clientX - gameContainer.offsetLeft + canvas.offsetLeft  , event.clientY  - gameContainer.offsetTop + canvas.offsetTop, 5, 0, Math.PI * 2, false);
   ctx.fillStyle = 'white';
   ctx.fill(); */
@@ -94,8 +91,16 @@ gameContainer.addEventListener('mousedown', (e) => {
     return;
   }
   scoreElement.innerText = `${player.radius}`;
-  projectiles.push(new Projectile(center.x + velocity.x * player.radius, center.y + velocity.y * player.radius, 5, 'red', velocity));
+  projectiles.push(
+    new Projectile(
+      center.x + velocity.x * player.radius,
+      center.y + velocity.y * player.radius,
+      5,
+      'red',
+      velocity
+    )
+  );
 });
 
 GameLoop();
-LevelCounter();
+
