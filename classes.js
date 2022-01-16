@@ -1,12 +1,15 @@
+const gameContainer = document.getElementById('game-container');
 const canvas = document.getElementById('game_canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+canvas.width = gameContainer.clientWidth;
+canvas.height = gameContainer.clientHeight;
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const projectiles = [];
 const enemies = [];
 let score = 0;
 const scoreElement = document.getElementById('score');
+let levelIntervalSeconds = 1000;
+const pause = false;
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];

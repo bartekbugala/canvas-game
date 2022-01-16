@@ -1,19 +1,19 @@
-const player = new Player(center.x, center.y, 50, 'rgba(255,255,255)');
+const player = new Player(center.x, center.y, 50, 'rgba(0,255,255,.5)');
 player.draw();
 spawnEnemies();
 scoreElement.innerText = `${player.radius}`;
 
-let lastUpdate = new Date();
+/* let lastUpdate = new Date(); */
 
 function GameLoop() {
   /*   //Determine the amount of time since last frame update
   let now = new Date();
   let elapsed = now - lastUpdate;
   lastUpdate = now; */
+  if (document.visibilityState !== 'visible');
   if (player.radius < 1) return;
-
+  if (pause) return;
   animate();
-
   requestAnimationFrame(GameLoop);
   if (player.radius < 0) return;
   player.draw();
@@ -69,10 +69,18 @@ function animate() {
 function spawnEnemies() {
   setInterval(() => {
     enemies.push(new Enemy(500, 200, 25, 'white'));
-  }, 800);
+  }, levelIntervalSeconds);
+  setInterval(() => {
+    if (levelIntervalSeconds - 50 < 0) return;
+    levelIntervalSeconds -= 50;
+  }, 50);
 }
 
-window.addEventListener('mousedown', (e) => {
+gameContainer.addEventListener('mousedown', (e) => {
+  /*   ctx.beginPath();
+  ctx.arc(event.clientX - gameContainer.offsetLeft + canvas.offsetLeft  , event.clientY  - gameContainer.offsetTop + canvas.offsetTop, 5, 0, Math.PI * 2, false);
+  ctx.fillStyle = 'white';
+  ctx.fill(); */
   const angle = calculateAngleFromEvent(e, canvas);
   const velocity = calculateVelocity(angle);
   if (player.radius > 0) {
@@ -82,21 +90,17 @@ window.addEventListener('mousedown', (e) => {
     alert('YOU HAVE BEEN DEFEATED!');
     return;
   }
-  projectiles.push(new Projectile(center.x, center.y, 5, 'white', velocity));
-
-  /*
-  const angle = calculateAngleFromEvent(e, canvas);
-  const velocity = calculateVelocity(angle);
-  if (player.radius > 0) {
-    player.radius -= radiusDifference(player.radius, 5, 'subtract') || 1;
-  }
-  if (player.radius < 1) {
-    alert('YOU HAVE BEEN DEFEATED!');
-    return;
-  }
-  projectiles.push(new Projectile(center.x, center.y, 5, 'white', velocity));
-
-  */
+  scoreElement.innerText = `${player.radius}`;
+  projectiles.push(
+    new Projectile(
+      center.x + velocity.x * player.radius,
+      center.y + velocity.y * player.radius,
+      5,
+      'red',
+      velocity
+    )
+  );
 });
 
 GameLoop();
+
