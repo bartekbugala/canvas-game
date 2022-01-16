@@ -1,8 +1,7 @@
-const player = new Player(center.x, center.y, 50, 'rgba(0,255,255,.5)');
+let levelInterval;
+let spawnInterval;
+const player = new Player(center.x, center.y, 100, 'white');
 player.draw();
-spawnEnemies();
-scoreElement.innerText = `${player.radius}`;
-
 /* let lastUpdate = new Date(); */
 
 function GameLoop() {
@@ -10,12 +9,17 @@ function GameLoop() {
   let now = new Date();
   let elapsed = now - lastUpdate;
   lastUpdate = now; */
+  if (player.radius < 1) {
+    gameIsRunning = false;
+    gameMenu.classList.remove('hidden');
+    return;
+  }
+  if (!gameIsRunning) return;
   if (document.visibilityState !== 'visible');
   if (player.radius < 1) return;
   if (pause) return;
   animate();
   requestAnimationFrame(GameLoop);
-  if (player.radius < 0) return;
   player.draw();
 }
 
@@ -40,11 +44,6 @@ function animate() {
       enemies.splice(enemyIndex, 1);
     }
     if (isCollision(player, enemy)) {
-      console.log(
-        'collision',
-        player.radius,
-        radiusDifference(player.radius, enemy.radius) || 1
-      );
       player.radius -=
         player.radius - radiusDifference(player.radius, enemy.radius) >= 1
           ? radiusDifference(player.radius, enemy.radius) || 1
@@ -67,40 +66,55 @@ function animate() {
 }
 
 function spawnEnemies() {
-  setInterval(() => {
-    enemies.push(new Enemy(500, 200, 25, 'white'));
+  if (!gameIsRunning) return;
+  spawnInterval = setInterval(() => {
+    if (enemies.length > 30) return;
+
+    enemies.push(
+      new Enemy(
+        500,
+        200,
+        25,
+        `rgb(${randomNumber(255)},${randomNumber(255)},${randomNumber(255)})`
+      )
+    );
   }, levelIntervalSeconds);
-  setInterval(() => {
+  levelInterval = setInterval(() => {
     if (levelIntervalSeconds - 50 < 0) return;
     levelIntervalSeconds -= 50;
   }, 50);
 }
-
 gameContainer.addEventListener('mousedown', (e) => {
-  /*   ctx.beginPath();
-  ctx.arc(event.clientX - gameContainer.offsetLeft + canvas.offsetLeft  , event.clientY  - gameContainer.offsetTop + canvas.offsetTop, 5, 0, Math.PI * 2, false);
-  ctx.fillStyle = 'white';
-  ctx.fill(); */
   const angle = calculateAngleFromEvent(e, canvas);
   const velocity = calculateVelocity(angle);
-  if (player.radius > 0) {
-    player.radius -= radiusDifference(player.radius, 5, 'subtract') || 1;
-  }
-  if (player.radius < 1) {
-    alert('YOU HAVE BEEN DEFEATED!');
-    return;
-  }
+  if (projectiles.length > 30) return;
   scoreElement.innerText = `${player.radius}`;
+  if (projectiles.length > 30) return;
   projectiles.push(
     new Projectile(
       center.x + velocity.x * player.radius,
       center.y + velocity.y * player.radius,
       5,
-      'red',
+      'orange',
       velocity
     )
   );
+  if (player.radius > 0) {
+    player.radius -= radiusDifference(player.radius, 5, 'subtract') || 1;
+  }
 });
 
-GameLoop();
-
+startButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  gameMenu.classList.add('hidden');
+  gameIsRunning = true;
+  clearInterval(levelInterval);
+  clearInterval(spawnInterval);
+  levelIntervalSeconds = 1000;
+  enemies.splice(0);
+  projectiles.splice(0);
+  player.radius = 100;
+  spawnEnemies();
+  scoreElement.innerText = `${player.radius}`;
+  GameLoop();
+});
