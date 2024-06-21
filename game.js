@@ -83,10 +83,10 @@ function animate() {
 }
 
 function spawnEnemies() {
-  if (!gameIsRunning) return;
+
   spawnInterval = setInterval(() => {
     if (enemies.length > 30) return;
-
+    if (!gameIsRunning) return;
     enemies.push(
       new Enemy(
         500,
@@ -97,6 +97,7 @@ function spawnEnemies() {
     );
   }, levelIntervalSeconds);
   levelInterval = setInterval(() => {
+    if (!gameIsRunning) return;
     if (levelIntervalSeconds - 50 < 0) return;
     levelIntervalSeconds -= 50;
   }, 50);
