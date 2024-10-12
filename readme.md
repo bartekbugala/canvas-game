@@ -1,6 +1,6 @@
 # Canvas based game - RADIUS
 
-A small browser based game I made a while ago. To learn more about canvas.
+A small browser based game I made a while ago, to learn more about canvas.
 
 I wanted to try out some ideas on a canvas based game
 - radius changing according to the size of radiuses of other elements.
